@@ -2,7 +2,14 @@ package truckLoader;
 
 import java.util.ArrayList;
 
+
+
 public class Main {
+
+	private static int TRUCKLIMIT = 1100000;
+	private static int DRIVERWEIGHT1 = 72400;
+	private static int DRIVERWEIGHT2 = 85700;
+	
 	public static void main(String[] args) {
 		ArrayList<Item> itemList = new ArrayList<Item>();
 		
@@ -37,13 +44,19 @@ public class Main {
 			itemList.add(new Item(68, 1980, "TabletOutdoorGroß"));
 		}
 		TruckLoader tl = new TruckLoader(itemList);
-		int maxVal = tl.getMaxValue(100000-72400);
-		System.out.println("Maximale Value: " + maxVal);
-		System.out.println("Test Value: " + tl.getGreedyValue(100000-72400));
-		boolean[] loadingList = new boolean[1075];
-		if(!tl.getLoadingList(100000-72400, maxVal, 0, 0, 0, loadingList)) {
-			System.out.println("Given target value can not be loaded!");
-		}
-		System.out.println("Test");
+//		System.out.println("Maximale Value: " + maxVal);
+//		System.out.println("Test Value: " + tl.getGreedyValue(100000-72400));
+//		boolean[] loadingList = new boolean[1075];
+//		if(!tl.getLoadingList(100000-72400, maxVal, 0, 0, 0, loadingList)) {
+//			System.out.println("Given target value can not be loaded!");
+//		}
+//		System.out.println("Test");
+		ArrayList<Item> loadingList1 = new ArrayList<Item>();
+		ArrayList<Item> loadingList2 = new ArrayList<Item>();
+		int maxVal1 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT1);
+		int greedyVal1 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT1, loadingList1);
+		int maxVal2 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT2);
+		int greedyVal2 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT2, loadingList2);
+		System.out.println("break");
 	}
 }

@@ -34,70 +34,70 @@ public class TruckLoader {
 		return R1[maxWeight];
 	}
 
-	public boolean getLoadingList(int maxWeight, int targetVal, int currVal, int currWeight, int currItem, boolean[] loadingList) {
-		if(currItem >= itemList.size()) return false; //TODO correct recursion anchor!!!
-		if(currItem % 5 == 0) {
-			System.out.println("In Progress");
-		}
-		currVal += itemList.get(currItem).getValue();
-		currWeight += itemList.get(currItem).getWeight();
-		if(currWeight > maxWeight) {
-			return false;
-		}
-		loadingList[currItem] = true;
-		if(currVal == targetVal) {
-			return true;
-		}
-		if (solvable(currVal, currWeight, currItem, maxWeight, targetVal)) {
-			if (getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList)) {
-				return true;
-			} else {
-				currVal -= itemList.get(currItem).getValue();
-				currWeight -= itemList.get(currItem).getWeight();
-				loadingList[currItem] = false;
-				return getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList);
-			} 
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * determines a bound to kill live nodes which can't produce a correct solution
-	 * 
-	 * @return upper bound for current node
-	 */
-	private boolean solvable(int currVal, int currWeight, int currItem, int maxWeight, int targetVal) {
-		while(true) {
-			currItem++;
-			if(currItem < itemList.size()) { //kill the node if it can't reach targetVal with the rest of the items
-				currWeight += itemList.get(currItem).getWeight();
-				currVal += itemList.get(currItem).getValue();
-				if(currVal > targetVal) {	//first check if the target value can be reached
-					return true;
-				}
-				if(currWeight > maxWeight) { //then kill the node if it already is over maxWeight
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-	}
+//	public boolean getLoadingList(int maxWeight, int targetVal, int currVal, int currWeight, int currItem, boolean[] loadingList) {
+//		if(currItem >= itemList.size()) return false; //TODO correct recursion anchor!!!
+//		if(currItem % 5 == 0) {
+//			System.out.println("In Progress");
+//		}
+//		currVal += itemList.get(currItem).getValue();
+//		currWeight += itemList.get(currItem).getWeight();
+//		if(currWeight > maxWeight) {
+//			return false;
+//		}
+//		loadingList[currItem] = true;
+//		if(currVal == targetVal) {
+//			return true;
+//		}
+//		if (solvable(currVal, currWeight, currItem, maxWeight, targetVal)) {
+//			if (getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList)) {
+//				return true;
+//			} else {
+//				currVal -= itemList.get(currItem).getValue();
+//				currWeight -= itemList.get(currItem).getWeight();
+//				loadingList[currItem] = false;
+//				return getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList);
+//			} 
+//		} else {
+//			return false;
+//		}
+//	}
+//
+//	/**
+//	 * determines a bound to kill live nodes which can't produce a correct solution
+//	 * 
+//	 * @return upper bound for current node
+//	 */
+//	private boolean solvable(int currVal, int currWeight, int currItem, int maxWeight, int targetVal) {
+//		while(true) {
+//			currItem++;
+//			if(currItem < itemList.size()) { //kill the node if it can't reach targetVal with the rest of the items
+//				currWeight += itemList.get(currItem).getWeight();
+//				currVal += itemList.get(currItem).getValue();
+//				if(currVal > targetVal) {	//first check if the target value can be reached
+//					return true;
+//				}
+//				if(currWeight > maxWeight) { //then kill the node if it already is over maxWeight
+//					return false;
+//				}
+//			} else {
+//				return false;
+//			}
+//		}
+//	}
 	/**
 	 * implements a rudimentary algorithm to create a test value for the main algorithm, which it has to surpass
 	 * 
 	 * @param maxWeight
 	 * @return test value for comparison
 	 */
-	public int getGreedyValue(int maxWeight) {
-		int val = 0;
+	public int greedyAlgorithm(int maxWeight, ArrayList<Item> loadingList) {
 		int weight = 0;
-		for(int i = 0; i < itemList.size(); i++) {
-			if(weight + itemList.get(i).getWeight() <= maxWeight) {
-				val += itemList.get(i).getValue();
-				weight += itemList.get(i).getWeight();
-			}
+		int val = 0;
+		while(weight + itemList.get(0).getWeight() <= maxWeight) {
+				weight += itemList.get(0).getWeight();
+				val += itemList.get(0).getValue();
+				loadingList.add(itemList.get(0));
+				itemList.remove(0);
 		}
 		return val;
 	}
