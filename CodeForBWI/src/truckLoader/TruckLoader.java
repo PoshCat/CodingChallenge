@@ -12,14 +12,14 @@ public class TruckLoader {
 	}
 
 	/**
-	 * This function computes the maximum value loadable for two trucks with given max loading capacity.
+	 * This function computes the maximum value loadable for one truck with given maximum loading capacity.
 	 * 
 	 * @param maxWeight
-	 * @return maximum value for given maximum Weight
+	 * @return maximum value for given maximum weight
 	 */
 	public int getMaxValue(int maxWeight) {
 		int n = itemList.size();
-		int[] R1 = new int[maxWeight+1]; // as opposed to normal dynamic programming not all states are saved here to save memory. only the lowest two already computed states are saved
+		int[] R1 = new int[maxWeight+1]; // as opposed to normal dynamic programming not all states are saved here to save memory. only the lowest two already computed states are saved. this reduces the memory usage to a usable level
 		int[] R2 = new int[maxWeight+1];
 		for(int i = n-1; i >= 0; i--) {
 			for(int j = 1; j <= maxWeight; j++) {
@@ -34,70 +34,20 @@ public class TruckLoader {
 		return R1[maxWeight];
 	}
 
-//	public boolean getLoadingList(int maxWeight, int targetVal, int currVal, int currWeight, int currItem, boolean[] loadingList) {
-//		if(currItem >= itemList.size()) return false; //TODO correct recursion anchor!!!
-//		if(currItem % 5 == 0) {
-//			System.out.println("In Progress");
-//		}
-//		currVal += itemList.get(currItem).getValue();
-//		currWeight += itemList.get(currItem).getWeight();
-//		if(currWeight > maxWeight) {
-//			return false;
-//		}
-//		loadingList[currItem] = true;
-//		if(currVal == targetVal) {
-//			return true;
-//		}
-//		if (solvable(currVal, currWeight, currItem, maxWeight, targetVal)) {
-//			if (getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList)) {
-//				return true;
-//			} else {
-//				currVal -= itemList.get(currItem).getValue();
-//				currWeight -= itemList.get(currItem).getWeight();
-//				loadingList[currItem] = false;
-//				return getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList);
-//			} 
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	/**
-//	 * determines a bound to kill live nodes which can't produce a correct solution
-//	 * 
-//	 * @return upper bound for current node
-//	 */
-//	private boolean solvable(int currVal, int currWeight, int currItem, int maxWeight, int targetVal) {
-//		while(true) {
-//			currItem++;
-//			if(currItem < itemList.size()) { //kill the node if it can't reach targetVal with the rest of the items
-//				currWeight += itemList.get(currItem).getWeight();
-//				currVal += itemList.get(currItem).getValue();
-//				if(currVal > targetVal) {	//first check if the target value can be reached
-//					return true;
-//				}
-//				if(currWeight > maxWeight) { //then kill the node if it already is over maxWeight
-//					return false;
-//				}
-//			} else {
-//				return false;
-//			}
-//		}
-//	}
 	/**
-	 * implements a rudimentary algorithm to create a test value for the main algorithm, which it has to surpass
+	 * rudimentary algorithm using the ordered  ArraList from the constructor
 	 * 
 	 * @param maxWeight
-	 * @return test value for comparison
+	 * @return final value for comparison
 	 */
 	public int greedyAlgorithm(int maxWeight, ArrayList<Item> loadingList) {
 		int weight = 0;
 		int val = 0;
-		while(weight + itemList.get(0).getWeight() <= maxWeight) {
+		while(weight + itemList.get(0).getWeight() <= maxWeight && !itemList.isEmpty()) { //take items from the ordered list until the truck is full or the list is empty
 				weight += itemList.get(0).getWeight();
 				val += itemList.get(0).getValue();
 				loadingList.add(itemList.get(0));
-				itemList.remove(0);
+				itemList.remove(0); //the item is removed from the itemList to be able to load a second truck without loading the same item onto two trucks
 		}
 		return val;
 	}
