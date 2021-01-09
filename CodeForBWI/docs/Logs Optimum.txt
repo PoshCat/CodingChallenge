@@ -1,0 +1,3 @@
+Maximale Value: 62400
+Test Value: 14390
+72,4kg Fahrer
