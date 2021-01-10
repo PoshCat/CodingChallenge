@@ -51,18 +51,23 @@ public class Main {
 		TruckLoader tl = new TruckLoader(itemList);
 		ArrayList<Item> loadingList1 = new ArrayList<Item>();
 		ArrayList<Item> loadingList2 = new ArrayList<Item>();
+		ArrayList<Item> loadingList3 = new ArrayList<Item>();
+		ArrayList<Item> loadingList4 = new ArrayList<Item>();
 		int maxVal1 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT1);
-		int greedyVal1 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT1, loadingList1);
+		//int greedyVal1 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT1, loadingList1);
 		int maxVal2 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT2);
-		int greedyVal2 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT2, loadingList2);
-		printList(loadingList1, java.time.LocalTime.now() +": Erster LKW mit " + greedyVal1 + " Wert geladen:");
-		printList(loadingList2, "Zweiter LKW mit " + greedyVal2 + " Wert geladen:");
+		//int greedyVal2 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT2, loadingList2);
+		tl.getLoadingList(loadingList3, tl.getItemListSize(), TRUCKLIMIT - DRIVERWEIGHT1);
+		tl.getLoadingList(loadingList4, tl.getItemListSize(), TRUCKLIMIT - DRIVERWEIGHT2);
+		//printList(loadingList1, java.time.LocalTime.now() +": Erster LKW mit " + greedyVal1 + " statt optimal: " + maxVal1 + " Wert geladen:");
+		//printList(loadingList2, "Zweiter LKW mit " + greedyVal2 + " statt optimal: " + maxVal2 + " Wert geladen:");
+		printList(loadingList3, "erster LKW");
+		printList(loadingList4, "zweiter LKW");
 		System.out.println("Process finished");
 	}
-	
 
 	/**
-	 * as described by Kip in this stackoverflow thread: https://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+	 * prints the loading List into textfile
 	 * 
 	 * @param loadingList
 	 */
@@ -79,7 +84,7 @@ public class Main {
 			
 			while(!loadingList.isEmpty()) {
 				String itemType = loadingList.get(0).getId();
-				int itemCount = countItem(loadingList);
+				int itemCount = countAndRemove(loadingList);
 				out.println(itemType + ": " + itemCount);
 			}
 			
@@ -93,7 +98,7 @@ public class Main {
 	 * @param loadingList
 	 * @return count of the first item in the list
 	 */
-	private static int countItem(ArrayList<Item> loadingList) {
+	private static int countAndRemove(ArrayList<Item> loadingList) {
 		int count = 0;
 		String itemType = loadingList.get(0).getId();
 		loadingList.remove(0);

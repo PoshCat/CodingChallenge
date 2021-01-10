@@ -26,9 +26,6 @@ public class TruckLoader {
 		}
 		for(int i = 0; i < itemList.size(); i++) {
 			for(int j = 0; j <= maxWeight; j++) {
-				if(j==2963) {
-					boolean flag = true;
-				}
 				if(itemList.get(i).getWeight() > j) {
 					m1[j] = m2[j];
 				} else {
@@ -41,62 +38,46 @@ public class TruckLoader {
 		}
 		return m1[maxWeight];
 	}
-
-	public boolean getLoadingList(int maxWeight, int targetVal, int currVal, int currWeight, int currItem, ArrayList<Item> loadingList) {
-		if(currItem >= itemList.size()) return false; //TODO correct recursion anchor!!!
-		System.out.println("In Progress: " + currItem);
-		currVal += itemList.get(currItem).getValue();
-		currWeight += itemList.get(currItem).getWeight();
-		if(currWeight > maxWeight) {
-			return false;
-		}
-		loadingList.add(itemList.get(currItem));
-		if(currVal == targetVal) {
-			return true;
-		}
-		if (solvable(currVal, currWeight, currItem, maxWeight, targetVal)) {
-			if (getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList)) {
-				return true;
-			} else {
-				currVal -= itemList.get(currItem).getValue();
-				currWeight -= itemList.get(currItem).getWeight();
-				loadingList.remove(loadingList.size()-1);
-				return getLoadingList(maxWeight, targetVal, currVal, currWeight, currItem + 1, loadingList);
-			} 
-		} else {
-			return false;
-		}
-	}
-
+	
 	/**
-	 * determines a bound to kill live nodes which can't produce a correct solution
+	 * time consuming method to fill the loading list optimally for one truck using dynamic programming
+	 * explanation: https://en.wikipedia.org/wiki/Knapsack_problem
 	 * 
-	 * @return upper bound for current node
+	 * @param loadingList
+	 * @param itemLim
+	 * @param maxWeight
 	 */
-	private boolean solvable(int currVal, int currWeight, int currItem, int maxWeight, int targetVal) {
-		while(true) {
-			currItem++;
-			if(currItem < itemList.size()) { //kill the node if it can't reach targetVal with the rest of the items
-				if(currWeight + itemList.get(currItem).getWeight() > maxWeight) {
-					currVal += ((double)(maxWeight-currWeight)/(double)itemList.get(currItem).getWeight())*(double)itemList.get(currItem).getValue();
-					if(currVal >= targetVal) {
-						return true;
-					} else {
-						return false;
-					}
+	public void getLoadingList(ArrayList<Item> loadingList, int itemLim, int maxWeight) {
+		int[] m1 = new int[maxWeight+1];
+		int[] m2 = new int[maxWeight+1];
+		for(int i = 0; i < m1.length; i++) {
+			m1[i] = 0;
+			m2[i] = 0;
+		}
+		for(int i = 0; i < itemLim; i++) {
+			for(int j = 0; j <= maxWeight; j++) {
+				if(itemList.get(i).getWeight() > j) {
+					m1[j] = m2[j];
 				} else {
-					currWeight += itemList.get(currItem).getWeight();
-					currVal += itemList.get(currItem).getValue();			
+					m1[j] = Math.max(m2[j], m2[j-itemList.get(i).getWeight()] + itemList.get(i).getValue());
 				}
-				if(currVal >= targetVal) {	//first check if the target value can be reached
-					return true;
-				}
-				if(currWeight > maxWeight) { //then kill the node if it already is over maxWeight
-					return false;
-				}
-			} else {
-				return false;
 			}
+			if(i != itemLim - 1) {
+				for(int k = 0; k < maxWeight+1; k++) {
+					m2[k] = m1[k];
+				}				
+			}
+		}
+		if(itemLim == 0) {
+			return;
+		}
+		System.out.println(itemLim + System.currentTimeMillis());
+		if(m1[maxWeight] > m2[maxWeight]) {
+			loadingList.add(itemList.get(itemLim));
+			itemList.remove(itemLim);
+			getLoadingList(loadingList, itemLim-1, maxWeight-itemList.get(itemLim).getWeight());
+		} else {
+			getLoadingList(loadingList, itemLim-1, maxWeight);
 		}
 	}
   
@@ -116,5 +97,9 @@ public class TruckLoader {
 				itemList.remove(0); //the item is removed from the itemList to be able to load a second truck without loading the same item onto two trucks
 		}
 		return val;
+	}
+	
+	public int getItemListSize() {
+		return itemList.size();
 	}
 }
