@@ -13,8 +13,9 @@ public class Main {
 	private static int TRUCKLIMIT = 1100000;
 	private static int DRIVERWEIGHT1 = 72400;
 	private static int DRIVERWEIGHT2 = 85700;
-	
+
 	public static void main(String[] args) {
+		
 		ArrayList<Item> itemList = new ArrayList<Item>();
 		
 		for(int i = 0; i < 205; i++) {
