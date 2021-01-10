@@ -1,8 +1,15 @@
 package truckLoader;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+
+
 public class Main {
+
 	private static int TRUCKLIMIT = 1100000;
 	private static int DRIVERWEIGHT1 = 72400;
 	private static int DRIVERWEIGHT2 = 85700;
@@ -42,13 +49,64 @@ public class Main {
 			itemList.add(new Item(68, 1980, "TabletOutdoorGroß"));
 		}
 		TruckLoader tl = new TruckLoader(itemList);
-		int maxVal = tl.getMaxValue(TRUCKLIMIT-DRIVERWEIGHT1);
-		System.out.println("Maximale Value: " + maxVal);
-		System.out.println("Test Value: " + tl.getGreedyValue(TRUCKLIMIT-DRIVERWEIGHT1));
-		ArrayList<Item> loadingList = new ArrayList<Item>();
-		if(!tl.getLoadingList(TRUCKLIMIT-DRIVERWEIGHT1, maxVal, 0, 0, 0, loadingList)) {
-			System.out.println("Given target value can not be loaded!");
+		ArrayList<Item> loadingList1 = new ArrayList<Item>();
+		ArrayList<Item> loadingList2 = new ArrayList<Item>();
+		int maxVal1 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT1);
+		int greedyVal1 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT1, loadingList1);
+		int maxVal2 = tl.getMaxValue(TRUCKLIMIT - DRIVERWEIGHT2);
+		int greedyVal2 = tl.greedyAlgorithm(TRUCKLIMIT - DRIVERWEIGHT2, loadingList2);
+		printList(loadingList1, java.time.LocalTime.now() +": Erster LKW mit " + greedyVal1 + " Wert geladen:");
+		printList(loadingList2, "Zweiter LKW mit " + greedyVal2 + " Wert geladen:");
+		System.out.println("Process finished");
+	}
+	
+
+	/**
+	 * as described by Kip in this stackoverflow thread: https://stackoverflow.com/questions/1625234/how-to-append-text-to-an-existing-file-in-java
+	 * 
+	 * @param loadingList
+	 */
+	private static void printList(ArrayList<Item> loadingList, String initialMessage) {
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		PrintWriter out = null;
+		try {
+			fw = new FileWriter("loadingList.txt", true);
+			bw = new BufferedWriter(fw);
+			out = new PrintWriter(bw);
+			
+			out.println(initialMessage);
+			
+			while(!loadingList.isEmpty()) {
+				String itemType = loadingList.get(0).getId();
+				int itemCount = countItem(loadingList);
+				out.println(itemType + ": " + itemCount);
+			}
+			
+			out.close();
+		} catch (IOException e) {
+			System.err.format("IOException: %s%n", e);
 		}
-		System.out.println("Test");
+	}
+	
+	/**
+	 * @param loadingList
+	 * @return count of the first item in the list
+	 */
+	private static int countItem(ArrayList<Item> loadingList) {
+		int count = 0;
+		String itemType = loadingList.get(0).getId();
+		loadingList.remove(0);
+		count++;
+		int currItem = 0;
+		while(currItem < loadingList.size()) {
+			if(loadingList.get(currItem).getId() == itemType) {
+				count++;
+				loadingList.remove(currItem);
+			} else {
+				currItem++;
+			}
+		}
+		return count;
 	}
 }

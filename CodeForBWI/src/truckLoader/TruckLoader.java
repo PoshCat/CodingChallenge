@@ -12,10 +12,10 @@ public class TruckLoader {
 	}
 
 	/**
-	 * This function computes the maximum value loadable for two trucks with given max loading capacity.
+	 * This function computes the maximum value loadable for one truck with given maximum loading capacity.
 	 * 
 	 * @param maxWeight
-	 * @return maximum value for given maximum Weight
+	 * @return maximum value for given maximum weight
 	 */
 	public int getMaxValue(int maxWeight) {
 		int[] m1 = new int[maxWeight+1];
@@ -99,20 +99,21 @@ public class TruckLoader {
 			}
 		}
 	}
+  
 	/**
 	 * implements a rudimentary algorithm to create a test value for the main algorithm, which it has to surpass
 	 * 
 	 * @param maxWeight
-	 * @return test value for comparison
+	 * @return final value for comparison
 	 */
-	public int getGreedyValue(int maxWeight) {
-		int val = 0;
+	public int greedyAlgorithm(int maxWeight, ArrayList<Item> loadingList) {
 		int weight = 0;
-		for(int i = 0; i < itemList.size(); i++) {
-			if(weight + itemList.get(i).getWeight() <= maxWeight) {
-				val += itemList.get(i).getValue();
-				weight += itemList.get(i).getWeight();
-			}
+		int val = 0;
+		while(weight + itemList.get(0).getWeight() <= maxWeight && !itemList.isEmpty()) { //take items from the ordered list until the truck is full or the list is empty
+				weight += itemList.get(0).getWeight();
+				val += itemList.get(0).getValue();
+				loadingList.add(itemList.get(0));
+				itemList.remove(0); //the item is removed from the itemList to be able to load a second truck without loading the same item onto two trucks
 		}
 		return val;
 	}

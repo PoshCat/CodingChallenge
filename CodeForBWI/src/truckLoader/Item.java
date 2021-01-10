@@ -29,11 +29,11 @@ public class Item implements Comparable<Item>{
 		this.value = value;
 	}
 
-	private String getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	private void setId(String id) {
 		this.id = id;
 	}
 
