@@ -1,0 +1,8 @@
+21:49:21.083118200: Erster LKW mit 44764 Wert geladen:
+MobiltelefonOutdoor: 157
+MobiltelefonHeavyDuty: 220
+MobiltelefonBüro: 60
+TabletOutdoorGroß: 283
+Zweiter LKW mit 29876 Wert geladen:
+TabletOutdoorGroß: 87
+TabletBüroKlein: 599
